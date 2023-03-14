@@ -27,6 +27,14 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   ...draggableStyle,
 })
 
+const getListStyle = (isDraggingOver, isExtendedList) => ({
+  //background: isDraggingOver ? 'lightblue' : 'lightgrey',
+  width: '100%',
+  paddingBottom: 20,
+  maxHeight: isExtendedList ? '80vh' : '350px',
+  height: isExtendedList ? '60vh' : '300px',
+})
+
 class Waypoints extends Component {
   static propTypes = {
     directions: PropTypes.object,
@@ -73,16 +81,20 @@ class Waypoints extends Component {
 
   render() {
     const { waypoints } = this.props.directions
+    const isExtendedList = waypoints.length >= 6
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
         <Droppable droppableId="droppable">
           {(provided, snapshot) => (
             <React.Fragment>
               <div
-                className={`flex flex-column`}
+                className={`flex 
+                ${
+                  isExtendedList ? 'flex-column overflow-auto' : 'flex-column'
+                }`}
                 {...provided.droppableProps}
                 ref={provided.innerRef}
-                style={{ minHeight: '22rem' }}
+                style={getListStyle(snapshot.isDraggingOver, isExtendedList)}
               >
                 {waypoints.map((wp, index) => (
                   <Draggable key={wp.id} draggableId={wp.id} index={index}>
